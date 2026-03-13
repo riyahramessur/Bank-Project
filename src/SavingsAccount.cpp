@@ -1,5 +1,6 @@
 #include "SavingsAccount.h"
 #include "Exceptions.h"
+#include "Constants.h"
 
 SavingsAccount::SavingsAccount(const std::string& accountId, std::shared_ptr<Customer> owner, double initialBalance)
     : Account(accountId, owner, initialBalance) {
@@ -10,7 +11,7 @@ void SavingsAccount::withdraw(double amount) {
         throw InvalidAmountException(amount);
     }
 
-    if (amount > 500.0) {
+    if (amount > Constants::SAVINGS_WITHDRAWAL_LIMIT) {
         throw BankException("Savings withdrawal limit exceeded");
     }
 

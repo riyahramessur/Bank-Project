@@ -1,6 +1,9 @@
 #include <iostream>
 #include "BankSystem.h"
 #include "Exceptions.h"
+#include "Transaction.h"
+#include <type_traits>
+#include <variant>
 
 void BankSystem::addCustomer(std::shared_ptr<Customer> customer) {
     customers.push_back(customer);
@@ -14,13 +17,13 @@ void BankSystem::addTransaction(const Transaction& transaction) {
     transactions.push_back(transaction);
 }
 
-std::shared_ptr<Customer> BankSystem::findCustomerById(const std::string& customerId) const {
+std::optional<std::shared_ptr<Customer>> BankSystem::findCustomerById(const std::string& customerId) const {
     for (const auto& customer : customers) {
         if (customer->getCustomerId() == customerId) {
             return customer;
         }
     }
-    return nullptr;
+    return std::nullopt;
 }
 
 Account* BankSystem::findAccountById(const std::string& accountId) const {
@@ -40,8 +43,8 @@ void BankSystem::depositToAccount(const std::string& accountId, double amount) {
 
     transactions.push_back(Transaction(
         "T" + std::to_string(transactions.size() + 1),
-        "Deposit",
-        amount
+        amount,
+        DepositData{ accountId }
     ));
 }
 
@@ -52,8 +55,8 @@ void BankSystem::withdrawFromAccount(const std::string& accountId, double amount
 
     transactions.push_back(Transaction(
         "T" + std::to_string(transactions.size() + 1),
-        "Withdraw",
-        amount
+        amount,
+        WithdrawData{ accountId }
     ));
 }
 
@@ -70,8 +73,8 @@ void BankSystem::transferBetweenAccounts(
 
     transactions.push_back(Transaction(
         "T" + std::to_string(transactions.size() + 1),
-        "Transfer",
-        amount
+        amount,
+        TransferData{ fromAccountId, toAccountId }
     ));
 }
 
@@ -96,6 +99,35 @@ void BankSystem::showAllTransactions() const {
     for (const auto& transaction : transactions) {
         std::cout << "Transaction ID: " << transaction.getTransactionId()
             << ", Type: " << transaction.getType()
-            << ", Amount: " << transaction.getAmount() << std::endl;
+            << ", Amount: " << transaction.getAmount();
+
+        std::visit([](const auto& data) {
+            using T = std::decay_t<decltype(data)>;
+
+            if constexpr (std::is_same_v<T, DepositData>) {
+                std::cout << ", Account ID: " << data.accountId;
+            }
+            else if constexpr (std::is_same_v<T, WithdrawData>) {
+                std::cout << ", Account ID: " << data.accountId;
+            }
+            else if constexpr (std::is_same_v<T, TransferData>) {
+                std::cout << ", From: " << data.fromAccountId
+                    << ", To: " << data.toAccountId;
+            }
+            }, transaction.getData());
+
+        std::cout << std::endl;
     }
+}
+
+const std::vector<std::shared_ptr<Customer>>& BankSystem::getCustomers() const {
+    return customers;
+}
+
+const std::vector<std::unique_ptr<Account>>& BankSystem::getAccounts() const {
+    return accounts;
+}
+
+const std::vector<Transaction>& BankSystem::getTransactions() const {
+    return transactions;
 }

@@ -1,12 +1,13 @@
 #include "Account.h"
 #include "Exceptions.h"
+#include "Constants.h"
 
 Account::Account(const std::string& accountId, std::shared_ptr<Customer> owner, double initialBalance)
     : accountId(accountId), balance(initialBalance), owner(owner) {
 }
 
 void Account::deposit(double amount) {
-    if (amount <= 0) {
+    if (amount < Constants::MIN_TRANSACTION_AMOUNT) {
         throw InvalidAmountException(amount);
     }
 
