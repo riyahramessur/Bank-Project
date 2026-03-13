@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <variant>
+#include <filesystem>
 #include "FileManager.h"
 #include "Exceptions.h"
 #include "CheckingAccount.h"
@@ -22,6 +23,8 @@ static std::vector<std::string> splitLine(const std::string& line, char delimite
 }
 
 void FileManager::saveCustomers(const BankSystem& bankSystem, const std::string& filename) {
+    std::filesystem::create_directories("data");
+    
     std::ofstream file(filename);
 
     if (!file.is_open()) {
@@ -36,6 +39,8 @@ void FileManager::saveCustomers(const BankSystem& bankSystem, const std::string&
 }
 
 void FileManager::saveAccounts(const BankSystem& bankSystem, const std::string& filename) {
+    std::filesystem::create_directories("data");
+    
     std::ofstream file(filename);
 
     if (!file.is_open()) {
@@ -51,6 +56,8 @@ void FileManager::saveAccounts(const BankSystem& bankSystem, const std::string& 
 }
 
 void FileManager::saveTransactions(const BankSystem& bankSystem, const std::string& filename) {
+    std::filesystem::create_directories("data");
+    
     std::ofstream file(filename);
 
     if (!file.is_open()) {

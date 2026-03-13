@@ -189,9 +189,12 @@ int main() {
                 std::cout << "Data saved successfully.\n";
             }
             else if (choice == 12) {
+                bank.clearAllData();
+
                 FileManager::loadCustomers(bank, "data/customers.txt");
                 FileManager::loadAccounts(bank, "data/accounts.txt");
                 FileManager::loadTransactions(bank, "data/transactions.txt");
+
                 std::cout << "Data loaded successfully.\n";
             }
             else if (choice == 0) {

@@ -131,3 +131,9 @@ const std::vector<std::unique_ptr<Account>>& BankSystem::getAccounts() const {
 const std::vector<Transaction>& BankSystem::getTransactions() const {
     return transactions;
 }
+
+void BankSystem::clearAllData() {
+    customers.clear();
+    accounts.clear();
+    transactions.clear();
+}

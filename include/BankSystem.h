@@ -34,6 +34,8 @@ public:
     void showAllCustomers() const;
     void showAllAccounts() const;
     void showAllTransactions() const;
+
+    void clearAllData();
 };
 
 #endif
